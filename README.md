@@ -1,15 +1,15 @@
 # Samarth Saxena - Portfolio
 
-## 🌐 Live Demo
+## Live Demo
 **[View My Portfolio](https://portfolio-ten-pi-1ntr2n4hgx.vercel.app/)**
 
-## ��‍💻 About Me
+## About Me
 
 I'm a passionate AI/ML Engineer and Full Stack Developer currently pursuing Computer Science at VIT Chennai. With hands-on experience at Siemens AG, I specialize in developing intelligent systems that solve real-world problems.
 
 My expertise spans from computer vision and natural language processing to full-stack web development, with a proven track record of delivering high-impact solutions including malpractice detection systems and web applications serving 500+ users daily.
 
-## 🚀 Key Projects
+## Key Projects
 
 ### AI-Powered Trading Signals Platform
 - **Multi-model ensemble system** achieving 85%+ prediction accuracy
@@ -31,7 +31,7 @@ My expertise spans from computer vision and natural language processing to full-
 - **Instant color-coded feedback** to users through browser interface
 - **Frontal and profile face detection** during quiz monitoring
 
-## 🛠️ Technologies & Skills
+## Technologies & Skills
 
 ### Programming Languages
 - **C** - Advanced programming concepts and practical implementation
@@ -58,19 +58,19 @@ My expertise spans from computer vision and natural language processing to full-
 - **Data Structures** - Algorithm optimization
 - **Software Engineering** - Best practices and architecture
 
-## �� Achievements
+## Achievements
 
-- **🏆 VIT Hackathon Champion** - Secured 1st place out of nearly 200 teams
-- **📜 IIT Bombay Certification** - C Programming certification with 87.5% score
-- **💻 Full-Stack Bootcamp** - Node.js, Express, MongoDB Complete Bootcamp
+- **VIT Hackathon Champion** - Secured 1st place out of nearly 200 teams
+- **IIT Bombay Certification** - C Programming certification with 87.5% score
+- **Full-Stack Bootcamp** - Node.js, Express, MongoDB Complete Bootcamp
 
-## �� Contact
+## Contact
 
 - **Email:** samarth.saxena2023@vitstudent.ac.in
 - **Phone:** (+91) 7066830353
-- **LinkedIn:** [Connect with me](https://linkedin.com/in/samarth-saxena)
+- **LinkedIn:** [Connect with me](https://www.linkedin.com/in/samarth-saxena-1734a628b/)
 
-## 🚀 Experience
+## Experience
 
 ### Web Development & AI/ML Intern at Siemens AG
 **July 2024 – Feb 2025**
@@ -82,7 +82,7 @@ My expertise spans from computer vision and natural language processing to full-
 - Built malpractice detection system using NLP for exam integrity monitoring
 - Created computer vision system with 90%+ accuracy for real-time monitoring
 
-## �� Portfolio Features
+## Portfolio Features
 
 - **Responsive Design** - Optimized for all devices
 - **Modern UI/UX** - Clean and professional interface
@@ -92,12 +92,12 @@ My expertise spans from computer vision and natural language processing to full-
 - **Skills Visualization** - Progress bars and skill categories
 - **Achievement Highlights** - Certificates and accomplishments
 
-## �� Quick Links
+## Quick Links
 
 - **[Live Portfolio](https://portfolio-ten-pi-1ntr2n4hgx.vercel.app/)**
 - **[GitHub Profile](https://github.com/bluebox123)**
-- **[LinkedIn Profile](https://linkedin.com/in/samarth-saxena)**
+- **[LinkedIn Profile](https://www.linkedin.com/in/samarth-saxena-1734a628b/)**
 
 ---
 
-**Ready to collaborate on exciting projects or discuss opportunities? Let's create something amazing together!** 🚀
+**Ready to collaborate on exciting projects or discuss opportunities? Let's create something amazing together!**
