@@ -1522,8 +1522,19 @@ section {
 
 .achievements-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
+    justify-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Large screens - show all 4 cards in one row */
+@media (min-width: 1400px) {
+    .achievements-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 1600px;
+    }
 }
 
 .achievement-card {
@@ -1538,6 +1549,8 @@ section {
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
+    max-width: 350px;
 }
 
 .achievement-card:hover {
@@ -1941,3 +1954,11 @@ section {
         font-size: 0.9rem;
     }
 }
+
+
+
+
+
+
+
+
