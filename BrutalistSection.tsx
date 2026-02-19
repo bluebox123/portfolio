@@ -107,13 +107,13 @@ export default function BrutalistSection() {
         >
             {/* ── Top Gold Banner ────────────────────────────────────────────── */}
             <div
-                className="flex items-center justify-between px-6 md:px-14 py-4"
+                className="flex items-center justify-between px-4 md:px-14 py-4"
                 style={{ borderBottom: '1px solid #C9A962' }}
             >
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2" style={{ background: '#C9A962' }} />
                     <span
-                        className="text-[11px] uppercase tracking-[1px]"
+                        className="text-[10px] md:text-[11px] uppercase tracking-[1px]"
                         style={{ fontFamily: 'IBM Plex Mono, monospace', color: '#C9A962' }}
                     >
                         CAPABILITIES · SAMARTH SAXENA · 2025
@@ -128,17 +128,17 @@ export default function BrutalistSection() {
             </div>
 
             {/* ── Section Header ─────────────────────────────────────────────── */}
-            <div className="px-6 md:px-14 pt-16 pb-12">
+            <div className="px-4 md:px-14 pt-12 md:pt-16 pb-12">
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
                     <div>
                         <p
-                            className="text-[12px] uppercase tracking-[2px] mb-4"
+                            className="text-[10px] md:text-[12px] uppercase tracking-[2px] mb-4"
                             style={{ fontFamily: 'IBM Plex Mono, monospace', color: '#777777' }}
                         >
                             WHAT I BUILD
                         </p>
                         <h2
-                            className="text-[42px] md:text-[56px] lg:text-[72px] font-bold leading-none uppercase"
+                            className="text-[32px] md:text-[56px] lg:text-[72px] font-bold leading-none uppercase"
                             style={{
                                 fontFamily: 'Space Grotesk, sans-serif',
                                 letterSpacing: '-1px',
@@ -153,7 +153,7 @@ export default function BrutalistSection() {
                     </div>
                     <a
                         href="#contact"
-                        className="inline-flex items-center gap-3 px-6 py-3 text-[12px] uppercase tracking-[1px] transition-all duration-300 group"
+                        className="inline-flex items-center gap-3 px-6 py-3 text-[12px] uppercase tracking-[1px] transition-all duration-300 group whitespace-nowrap"
                         style={{
                             fontFamily: 'IBM Plex Mono, monospace',
                             fontWeight: 600,
@@ -181,7 +181,7 @@ export default function BrutalistSection() {
                     return (
                         <div
                             key={s.num}
-                            className="group relative flex flex-col justify-between p-8 transition-colors duration-300 hover:bg-[#C9A962]/5"
+                            className="group relative flex flex-col justify-between p-6 md:p-8 transition-colors duration-300 hover:bg-[#C9A962]/5"
                             style={{
                                 borderRight: i < 3 ? '1px solid #333333' : 'none',
                                 borderBottom: '1px solid #333333',
@@ -191,7 +191,7 @@ export default function BrutalistSection() {
                             {/* Number + Icon row */}
                             <div className="flex items-start justify-between mb-6">
                                 <span
-                                    className="text-[24px] font-semibold"
+                                    className="text-[20px] md:text-[24px] font-semibold"
                                     style={{ fontFamily: 'IBM Plex Mono, monospace', color: '#333333' }}
                                 >
                                     {s.num}
@@ -226,13 +226,13 @@ export default function BrutalistSection() {
                                     style={{ background: '#C9A962' }}
                                 />
                                 <div
-                                    className="text-[36px] font-bold"
+                                    className="text-[32px] md:text-[36px] font-bold"
                                     style={{ fontFamily: 'Space Grotesk, sans-serif', color: '#C9A962' }}
                                 >
                                     {s.stat}
                                 </div>
                                 <div
-                                    className="text-[11px] uppercase tracking-[1px]"
+                                    className="text-[10px] md:text-[11px] uppercase tracking-[1px]"
                                     style={{ fontFamily: 'IBM Plex Mono, monospace', color: '#777777' }}
                                 >
                                     {s.statLabel}
@@ -249,8 +249,6 @@ export default function BrutalistSection() {
                 })}
             </div>
 
-
-
             {/* ── Hero Metric Bar ────────────────────────────────────────────── */}
             <div
                 className="grid grid-cols-1 md:grid-cols-3"
@@ -263,14 +261,14 @@ export default function BrutalistSection() {
                 ].map((m, i) => (
                     <div
                         key={i}
-                        className="flex flex-col justify-between p-8 md:p-10 relative"
+                        className="flex flex-col justify-between p-6 md:p-10 relative"
                         style={{
                             background: i === 0 ? '#C9A962' : '#0A0A0A',
                             borderRight: i < 2 ? '1px solid #333333' : 'none',
                         }}
                     >
                         <p
-                            className="text-[12px] uppercase tracking-[2px] mb-4"
+                            className="text-[10px] md:text-[12px] uppercase tracking-[2px] mb-4"
                             style={{
                                 fontFamily: 'IBM Plex Mono, monospace',
                                 color: i === 0 ? '#0A0A0A' : '#777777',
@@ -279,7 +277,7 @@ export default function BrutalistSection() {
                             {m.label}
                         </p>
                         <p
-                            className="text-[64px] font-bold leading-none mb-4"
+                            className="text-[48px] md:text-[64px] font-bold leading-none mb-4"
                             style={{
                                 fontFamily: 'Space Grotesk, sans-serif',
                                 color: i === 0 ? '#0A0A0A' : '#FFFFFF',
@@ -290,7 +288,7 @@ export default function BrutalistSection() {
                         <div className="flex items-center gap-2">
                             <m.icon size={14} color={i === 0 ? '#0A0A0A' : '#C9A962'} />
                             <span
-                                className="text-[12px] uppercase tracking-[1px]"
+                                className="text-[10px] md:text-[12px] uppercase tracking-[1px]"
                                 style={{
                                     fontFamily: 'IBM Plex Mono, monospace',
                                     color: i === 0 ? '#0A0A0A' : '#C9A962',

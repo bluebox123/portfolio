@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import BrutalistSection from './BrutalistSection';
 import {
   Terminal,
   Cpu,
-  Database,
   Layers,
   ArrowUpRight,
   Github,
@@ -28,13 +27,13 @@ interface Project {
 // --- Components ---
 
 const NavPill = () => (
-  <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
-    <div className="flex items-center gap-1 p-1.5 rounded-full bg-neutral-900/80 backdrop-blur-md border border-neutral-800 shadow-2xl shadow-signal-orange/10">
+  <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto max-w-fit">
+    <div className="flex items-center gap-1 p-1.5 rounded-full bg-neutral-900/80 backdrop-blur-md border border-neutral-800 shadow-2xl shadow-signal-orange/10 overflow-x-auto no-scrollbar">
       {['Identity', 'Capabilities', 'Engineering', 'Projects', 'Contact'].map((item, i) => (
         <a
           key={item}
           href={`#${item.toLowerCase()}`}
-          className={`px-5 py-2 rounded-full text-xs font-mono font-medium transition-all duration-300 ${i === 0 ? 'bg-signal-orange text-black font-bold' : 'text-neutral-400 hover:text-white hover:bg-neutral-800'}`}
+          className={`px-4 md:px-5 py-2 rounded-full text-xs font-mono font-medium transition-all duration-300 whitespace-nowrap ${i === 0 ? 'bg-signal-orange text-black font-bold' : 'text-neutral-400 hover:text-white hover:bg-neutral-800'}`}
         >
           {item}
         </a>
@@ -69,10 +68,17 @@ const BentoTile = ({
 );
 
 const ProjectCard = ({ project }: { project: Project }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className="group relative h-[400px] w-full border-t border-neutral-800 hover:border-signal-orange transition-colors duration-300 overflow-hidden bg-black">
+    <div
+      className="group relative h-[450px] md:h-[400px] w-full border-t border-neutral-800 hover:border-signal-orange transition-colors duration-300 overflow-hidden bg-black"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => setIsHovered(!isHovered)}
+    >
       {/* Default State */}
-      <div className="absolute inset-0 p-8 flex flex-col justify-between transition-transform duration-500 group-hover:-translate-y-full">
+      <div className={`absolute inset-0 p-6 md:p-8 flex flex-col justify-between transition-transform duration-500 ${isHovered ? '-translate-y-full' : 'translate-y-0'}`}>
         <div>
           <div className="flex items-start justify-between mb-4">
             <span className="px-3 py-1 text-[10px] font-mono border border-neutral-700 rounded-full text-neutral-400">
@@ -80,10 +86,10 @@ const ProjectCard = ({ project }: { project: Project }) => {
             </span>
             <ArrowUpRight className="text-neutral-600 group-hover:text-signal-orange transition-colors" />
           </div>
-          <h3 className="text-4xl font-sans font-bold tracking-tight mb-2 leading-tight text-white group-hover:text-signal-orange transition-colors">
+          <h3 className="text-3xl md:text-4xl font-sans font-bold tracking-tight mb-2 leading-tight text-white group-hover:text-signal-orange transition-colors">
             {project.title}
           </h3>
-          <p className="text-neutral-400 leading-relaxed max-w-md">
+          <p className="text-neutral-400 leading-relaxed max-w-md text-sm md:text-base">
             {project.description}
           </p>
         </div>
@@ -96,14 +102,14 @@ const ProjectCard = ({ project }: { project: Project }) => {
         </div>
       </div>
 
-      {/* Hover State - Architecture View */}
-      <div className="absolute inset-0 p-8 bg-neutral-900 flex flex-col translate-y-full transition-transform duration-500 group-hover:translate-y-0">
+      {/* Hover/Active State - Architecture View */}
+      <div className={`absolute inset-0 p-6 md:p-8 bg-neutral-900 flex flex-col transition-transform duration-500 ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="flex items-center gap-2 mb-6 text-signal-orange font-mono text-xs uppercase">
           <Network size={14} />
           <span>System Architecture</span>
         </div>
 
-        <div className="flex-grow space-y-4 font-mono text-sm text-neutral-300">
+        <div className="flex-grow space-y-4 font-mono text-xs md:text-sm text-neutral-300">
           {project.architecture.map((step, i) => (
             <div key={i} className="flex items-center gap-3">
               <span className="text-neutral-600">0{i + 1}</span>
@@ -143,7 +149,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-signal-orange selection:text-black">
+    <div className="min-h-screen bg-black text-white selection:bg-signal-orange selection:text-black font-sans">
       <NavPill />
 
       {/* ── Video Background ── */}
@@ -163,7 +169,7 @@ export default function App() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
 
         {/* Watermark Cover / Status Badge */}
-        <div className="absolute bottom-8 right-8 flex items-center gap-2 px-3 py-1.5 bg-black border border-neutral-800 rounded-full">
+        <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 flex items-center gap-2 px-3 py-1.5 bg-black border border-neutral-800 rounded-full z-20">
           <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_5px_#10B981]"></div>
           <span className="font-mono text-[10px] text-neutral-500 tracking-widest">SYSTEM ONLINE</span>
         </div>
@@ -173,9 +179,9 @@ export default function App() {
       <div className="fixed inset-0 pointer-events-none swiss-grid opacity-20 z-0"></div>
 
       {/* Hero Section */}
-      <section id="identity" className="relative z-10 pt-40 pb-20 px-6 max-w-7xl mx-auto min-h-[90vh] flex flex-col justify-center">
+      <section id="identity" className="relative z-10 pt-32 md:pt-40 pb-20 px-4 md:px-6 max-w-7xl mx-auto min-h-[90vh] flex flex-col justify-center">
         {/* Glow Effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-signal-orange/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-signal-orange/10 blur-[80px] md:blur-[120px] rounded-full pointer-events-none"></div>
 
         <div className="relative">
           <div className="flex items-center gap-4 mb-6">
@@ -183,27 +189,27 @@ export default function App() {
             <span className="font-mono text-xs text-neutral-400 tracking-widest">ONLINE / CHENNAI, INDIA</span>
           </div>
 
-          <h1 className="text-[12vw] leading-[0.85] font-black tracking-tighter mix-blend-difference">
+          <h1 className="text-[clamp(3rem,12vw,9rem)] leading-[0.85] font-black tracking-tighter mix-blend-difference break-words">
             SAMARTH <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-500 to-neutral-800 outline-text">SAXENA</span>
           </h1>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
+          <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-end">
             <div>
-              <p className="text-xl md:text-2xl text-neutral-300 font-light max-w-lg leading-relaxed">
+              <p className="text-lg md:text-2xl text-neutral-300 font-light max-w-lg leading-relaxed">
                 Full Stack & AI Engineer focused on <span className="text-white font-medium border-b border-signal-orange">Generative AI</span> and <span className="text-white font-medium border-b border-signal-orange">Multi-agent Systems</span>.
                 Building production-ready distributed applications.
               </p>
             </div>
-            <div className="flex justify-start md:justify-end gap-6">
-              <a href="https://github.com/bluebox123" target="_blank" rel="noopener noreferrer" className="p-4 border border-neutral-800 rounded-full hover:bg-signal-orange hover:text-black hover:border-signal-orange transition-all duration-300">
-                <Github size={24} />
+            <div className="flex justify-start md:justify-end gap-4 md:gap-6">
+              <a href="https://github.com/bluebox123" target="_blank" rel="noopener noreferrer" className="p-3 md:p-4 border border-neutral-800 rounded-full hover:bg-signal-orange hover:text-black hover:border-signal-orange transition-all duration-300">
+                <Github size={20} className="md:w-6 md:h-6" />
               </a>
-              <a href="https://www.linkedin.com/in/samarth-saxena-1734a628b" target="_blank" rel="noopener noreferrer" className="p-4 border border-neutral-800 rounded-full hover:bg-signal-orange hover:text-black hover:border-signal-orange transition-all duration-300">
-                <Linkedin size={24} />
+              <a href="https://www.linkedin.com/in/samarth-saxena-1734a628b" target="_blank" rel="noopener noreferrer" className="p-3 md:p-4 border border-neutral-800 rounded-full hover:bg-signal-orange hover:text-black hover:border-signal-orange transition-all duration-300">
+                <Linkedin size={20} className="md:w-6 md:h-6" />
               </a>
-              <a href="mailto:samarthsaxena52@gmail.com" className="p-4 border border-neutral-800 rounded-full hover:bg-signal-orange hover:text-black hover:border-signal-orange transition-all duration-300">
-                <Mail size={24} />
+              <a href="mailto:samarthsaxena52@gmail.com" className="p-3 md:p-4 border border-neutral-800 rounded-full hover:bg-signal-orange hover:text-black hover:border-signal-orange transition-all duration-300">
+                <Mail size={20} className="md:w-6 md:h-6" />
               </a>
             </div>
           </div>
@@ -214,19 +220,19 @@ export default function App() {
       <BrutalistSection />
 
       {/* Engineering / Bento Grid */}
-      <section id="engineering" className="relative z-10 py-20 px-6 max-w-7xl mx-auto border-t border-neutral-900">
-        <div className="flex items-baseline justify-between mb-12">
-          <h2 className="text-4xl font-bold tracking-tight">EXPERIENCE<span className="text-signal-orange">.</span></h2>
+      <section id="engineering" className="relative z-10 py-16 md:py-20 px-4 md:px-6 max-w-7xl mx-auto border-t border-neutral-900">
+        <div className="flex flex-col md:flex-row items-baseline justify-between mb-8 md:mb-12 gap-2">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">EXPERIENCE<span className="text-signal-orange">.</span></h2>
           <span className="font-mono text-xs text-neutral-600">SYS_OVERVIEW</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-3 gap-4 h-auto md:h-[600px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-none md:grid-rows-3 gap-4 h-auto md:h-[600px]">
 
           {/* Main Experience Tile */}
           <BentoTile className="md:col-span-2 md:row-span-2 bg-neutral-900" title="EXPERIENCE" icon={Terminal}>
             <div className="flex flex-col h-full justify-between">
               <div>
-                <h3 className="text-2xl font-bold mb-1">SIEMENS</h3>
+                <h3 className="text-xl md:text-2xl font-bold mb-1">SIEMENS</h3>
                 <p className="text-sm font-mono text-signal-orange mb-6">Software Engineer Intern (Full Stack & AI)</p>
                 <ul className="space-y-4 text-sm text-neutral-400">
                   <li className="flex gap-3">
@@ -249,7 +255,7 @@ export default function App() {
 
           {/* Education Tile */}
           <BentoTile className="md:col-span-2 md:row-span-1" title="EDUCATION" icon={Award}>
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
               <div>
                 <div className="text-lg font-bold">Vellore Institute of Technology</div>
                 <div className="text-xs font-mono text-neutral-500">B.Tech Computer Science (AI & Robotics)</div>
@@ -338,13 +344,13 @@ export default function App() {
       </section>
 
       {/* Architecture / Projects */}
-      <section id="projects" className="relative z-10 py-20 px-6 max-w-7xl mx-auto">
-        <div className="flex items-baseline justify-between mb-12">
-          <h2 className="text-4xl font-bold tracking-tight">PROJECTS<span className="text-signal-orange">.</span></h2>
+      <section id="projects" className="relative z-10 py-16 md:py-20 px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row items-baseline justify-between mb-8 md:mb-12 gap-2">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">PROJECTS<span className="text-signal-orange">.</span></h2>
           <span className="font-mono text-xs text-neutral-600">SELECTED_WORKS</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <ProjectCard
             project={{
               title: "Distributed Multi-Agent Workflow",
@@ -379,33 +385,33 @@ export default function App() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="relative z-10 py-32 px-6 border-t border-neutral-900 bg-neutral-950">
+      <section id="contact" className="relative z-10 py-20 px-4 md:px-6 border-t border-neutral-900 bg-neutral-950">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8">
+          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter mb-8">
             OPEN TO <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-600">WORK</span>?
           </h2>
-          <p className="text-neutral-400 mb-12 text-lg">
-            Actively looking for AI Engineering internships (Remote / On-site). <br />
+          <p className="text-neutral-400 mb-12 text-base md:text-lg">
+            Actively looking for AI Engineering internships (Remote / On-site). <br className="hidden md:block" />
             Let's build meaningful full-stack and agentic projects.
           </p>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-            <a href="mailto:samarthsaxena52@gmail.com" className="flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-signal-orange transition-colors">
+            <a href="mailto:samarthsaxena52@gmail.com" className="w-full md:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-signal-orange transition-colors">
               <Mail size={20} />
               <span>Get in Touch</span>
             </a>
-            <a href="resume_samarth_i.pdf" download className="flex items-center gap-3 px-8 py-4 border border-neutral-800 bg-black text-white rounded-full font-medium hover:border-signal-orange transition-colors">
+            <a href="resume_samarth_i.pdf" download className="w-full md:w-auto flex items-center justify-center gap-3 px-8 py-4 border border-neutral-800 bg-black text-white rounded-full font-medium hover:border-signal-orange transition-colors">
               <Code size={20} />
               <span>Download Resume</span>
             </a>
           </div>
 
-          <footer className="mt-32 flex justify-between items-end text-xs font-mono text-neutral-700">
+          <footer className="mt-20 md:mt-32 flex flex-col md:flex-row justify-between items-center md:items-end gap-4 text-xs font-mono text-neutral-700 text-center md:text-left">
             <div>
               &copy; 2025 SAMARTH SAXENA<br />
               BUILT WITH REACT + TAILWIND
             </div>
-            <div className="text-right">
+            <div className="md:text-right">
               +91 70668 30353<br />
               CHENNAI, IN
             </div>
