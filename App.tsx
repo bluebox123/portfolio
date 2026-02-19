@@ -161,6 +161,12 @@ export default function App() {
         />
         {/* Dark gradient overlay so text stays legible */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+
+        {/* Watermark Cover / Status Badge */}
+        <div className="absolute bottom-8 right-8 flex items-center gap-2 px-3 py-1.5 bg-black border border-neutral-800 rounded-full">
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_5px_#10B981]"></div>
+          <span className="font-mono text-[10px] text-neutral-500 tracking-widest">SYSTEM ONLINE</span>
+        </div>
       </div>
 
       {/* Subtle Background Grid */}
