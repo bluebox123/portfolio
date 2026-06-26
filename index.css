@@ -1,0 +1,185 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Samarth Saxena — Portfolio custom motion + 3D system
+   Layered on top of Tailwind (CDN). Black + Gold + Signal-Orange identity.
+   ───────────────────────────────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Scroll-reveal primitive ─────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal[data-reveal="left"]  { transform: translateX(-50px); }
+.reveal[data-reveal="right"] { transform: translateX(50px); }
+.reveal[data-reveal="scale"] { transform: scale(0.94); }
+.reveal.is-visible[data-reveal="left"],
+.reveal.is-visible[data-reveal="right"],
+.reveal.is-visible[data-reveal="scale"] {
+  transform: none;
+}
+
+/* Staggered children */
+.reveal[style*="--reveal-delay"] {
+  transition-delay: var(--reveal-delay);
+}
+
+/* ── 3D tilt card ────────────────────────────────────────────────────────── */
+.tilt-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.tilt-3d .tilt-layer {
+  transform: translateZ(40px);
+  transform-style: preserve-3d;
+}
+.tilt-3d .tilt-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(201, 169, 98, 0.18),
+    transparent 55%
+  );
+  transition: opacity 0.3s ease;
+}
+.tilt-3d:hover .tilt-glare { opacity: 1; }
+
+/* ── Neural Sphere (scroll-driven 3D hero) ───────────────────────────────── */
+.neural-sphere-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.neural-sphere {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.ns-edges { stroke-linecap: round; }
+.ns-nodes { filter: drop-shadow(0 0 5px rgba(201, 169, 98, 0.55)); }
+.ns-pulses { filter: drop-shadow(0 0 7px rgba(255, 69, 0, 0.85)); }
+
+/* ── Season Atmosphere (rain → autumn → winter → spring → summer) ─────────── */
+.season-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #0c1016 0%, #04060a 100%);
+  transition: none;
+}
+.season-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+.season-wash {
+  position: fixed;
+  inset: 0;
+  z-index: 31;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ── Scroll Courier (negative-space traveler) ────────────────────────────── */
+.scroll-courier-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.scroll-courier {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.sc-trail { filter: drop-shadow(0 0 2px rgba(201, 169, 98, 0.4)); }
+.sc-craft { filter: drop-shadow(0 0 2.5px rgba(201, 169, 98, 0.5)); }
+
+/* ── Animated gradient text shimmer (gold) ───────────────────────────────── */
+@keyframes gold-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #C9A962 0%, #f3e3b8 25%, #C9A962 50%, #f3e3b8 75%, #C9A962 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gold-shimmer 6s linear infinite;
+}
+
+/* ── Outline / hollow display type ───────────────────────────────────────── */
+.outline-text {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.25);
+}
+
+/* ── Marquee tech ticker ─────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 32s linear infinite;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ── Floating pulse rings ────────────────────────────────────────────────── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.float-y { animation: float-y 6s ease-in-out infinite; }
+
+/* ── Scroll progress bar ─────────────────────────────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #C9A962, #FF4500);
+  z-index: 60;
+  width: 0%;
+  box-shadow: 0 0 12px rgba(201, 169, 98, 0.6);
+}
+
+/* ── Magnetic button base ────────────────────────────────────────────────── */
+.magnetic { transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .gold-shimmer { animation: none; }
+  .marquee-track { animation: none; }
+  .float-y { animation: none; }
+  .tilt-3d { transition: none; }
+}

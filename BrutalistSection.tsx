@@ -1,71 +1,40 @@
-import React, { useState } from 'react';
-import { TrendingUp, ArrowUpRight, ArrowRight, Zap, Globe, BrainCircuit, Server } from 'lucide-react';
+import React from 'react';
+import { TrendingUp, ArrowUpRight, ArrowRight, Zap, ShieldCheck, Cpu, Server } from 'lucide-react';
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const SERVICES = [
     {
         num: '01',
-        icon: BrainCircuit,
-        title: 'Multi-Agent AI Systems',
-        desc: 'Orchestration engines that convert natural language into executable DAGs. Fault-tolerant, async, production-grade.',
-        stat: '10+',
-        statLabel: 'Agents Deployed',
+        icon: Cpu,
+        title: 'LLM Pretraining & Fine-Tuning',
+        desc: 'Decoder-only GPTs from scratch — RoPE, RMSNorm, Muon optimizer. Pretrained on billions of tokens across A100 clusters.',
+        stat: '71.5M',
+        statLabel: 'Parameters Trained',
     },
     {
         num: '02',
+        icon: ShieldCheck,
+        title: 'Zero-Trust LLM Security',
+        desc: 'Middleware screening every prompt for injection & jailbreaks with HMAC signing and fail-closed grammar validation.',
+        stat: '<200ms',
+        statLabel: 'Added Latency',
+    },
+    {
+        num: '03',
         icon: Server,
         title: 'Full Stack Engineering',
-        desc: 'End-to-end web platforms with React, Node.js, FastAPI. Real-time systems with WebSockets and message queues.',
+        desc: 'End-to-end platforms with React, Node.js & FastAPI. Real-time systems with WebSockets and message queues.',
         stat: '500+',
         statLabel: 'Daily Users',
     },
     {
-        num: '03',
-        icon: Globe,
-        title: 'Hybrid RAG Pipelines',
-        desc: 'Retrieval architectures combining FAISS vector search with symbolic math verification to eliminate hallucinations.',
-        stat: '94%',
-        statLabel: 'Accuracy Rate',
-    },
-    {
         num: '04',
         icon: Zap,
-        title: 'Real-Time AI Detection',
-        desc: 'Sub-200ms malpractice detection using TensorFlow.js. Integrates directly into browser with live telemetry.',
-        stat: '<200ms',
-        statLabel: 'Latency',
-    },
-];
-
-const PROJECTS = [
-    {
-        name: 'Distributed Multi-Agent Workflow',
-        category: 'Agentic AI',
-        stack: 'React · RabbitMQ · Python',
-        status: 'IN PROGRESS',
-        impact: '+40% throughput',
-    },
-    {
-        name: 'AnnotedAI Platform',
-        category: 'Hybrid RAG',
-        stack: 'FastAPI · FAISS · SymPy',
-        status: 'ACTIVE',
-        impact: '94% precision',
-    },
-    {
-        name: 'SkillX Assessment Engine',
-        category: 'Enterprise SaaS',
-        stack: 'Node.js · MySQL · TF.js',
-        status: 'ACTIVE',
-        impact: '500+ daily users',
-    },
-    {
-        name: 'AI Workflow Orchestrator',
-        category: 'Infrastructure',
-        stack: 'Python · RabbitMQ · Docker',
-        status: 'ACTIVE',
-        impact: '99.9% uptime',
+        title: 'Hybrid RAG Pipelines',
+        desc: 'FAISS vector search paired with symbolic math verification to eliminate hallucinations in technical answers.',
+        stat: '100%',
+        statLabel: 'Pytest Pass Rate',
     },
 ];
 
@@ -75,35 +44,14 @@ const GoldDivider = () => (
     <div className="h-px w-full" style={{ background: '#C9A962', opacity: 0.3 }} />
 );
 
-const StatusBadge = ({ text }: { text: string }) => {
-    const isActive = text === 'ACTIVE';
-    const isProgress = text === 'IN PROGRESS';
-    return (
-        <span
-            className="inline-block px-4 py-2 text-[10px] uppercase tracking-[1px]"
-            style={{
-                fontFamily: 'IBM Plex Mono, monospace',
-                fontWeight: 400,
-                background: isActive ? '#C9A962' : 'transparent',
-                color: isActive ? '#0A0A0A' : isProgress ? '#FFFFFF' : '#777777',
-                border: isActive ? 'none' : isProgress ? '1px solid #FFFFFF' : '1px solid #333333',
-            }}
-        >
-            {text}
-        </span>
-    );
-};
-
 // ─── MAIN SECTION ────────────────────────────────────────────────────────────
 
 export default function BrutalistSection() {
-    const [hoveredRow, setHoveredRow] = useState<number | null>(null);
-
     return (
         <section
             id="capabilities"
             className="relative z-10 w-full"
-            style={{ background: '#0A0A0A' }}
+            style={{ background: 'rgba(10,10,10,0.5)' }}
         >
             {/* ── Top Gold Banner ────────────────────────────────────────────── */}
             <div
@@ -255,15 +203,15 @@ export default function BrutalistSection() {
                 style={{ borderTop: '1px solid #333333' }}
             >
                 {[
-                    { label: 'TOTAL PROJECTS', value: '12+', sub: '+3 THIS YEAR', icon: TrendingUp },
-                    { label: 'SYSTEMS IN PROD', value: '4', sub: '99.9% UPTIME', icon: Zap },
-                    { label: 'OPEN TO ROLES', value: 'NOW', sub: 'REMOTE / ON-SITE — INTERN', icon: ArrowUpRight },
+                    { label: 'FLAGSHIP PROJECTS', value: '3', sub: 'CITADEL · LLM · RAG', icon: TrendingUp },
+                    { label: 'PROD UPTIME', value: '99.9%', sub: 'PEAK EXAM LOAD', icon: Zap },
+                    { label: 'OPEN TO FULL-TIME', value: 'NOW', sub: 'REMOTE / ON-SITE · NOT INTERN', icon: ArrowUpRight },
                 ].map((m, i) => (
                     <div
                         key={i}
                         className="flex flex-col justify-between p-6 md:p-10 relative"
                         style={{
-                            background: i === 0 ? '#C9A962' : '#0A0A0A',
+                            background: i === 0 ? '#C9A962' : 'rgba(10,10,10,0.4)',
                             borderRight: i < 2 ? '1px solid #333333' : 'none',
                         }}
                     >
