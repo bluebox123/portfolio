@@ -13,7 +13,7 @@ const prefersReduced = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-const TRAIL = 18;
+const TRAIL = 10;
 
 // Waypoints as fractions of the viewport — a loop hugging the screen's edges
 // (the negative-space frame around the centered content column).

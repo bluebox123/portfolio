@@ -112,8 +112,9 @@ html {
   display: block;
   overflow: visible;
 }
-.sc-trail { filter: drop-shadow(0 0 2px rgba(201, 169, 98, 0.4)); }
-.sc-craft { filter: drop-shadow(0 0 2.5px rgba(201, 169, 98, 0.5)); }
+/* SVG drop-shadow filters intentionally omitted — they re-rasterize the
+   moving rocket every frame and were a major source of scroll stutter. The
+   radial glow circle under the craft provides the ambient glow instead. */
 
 /* ── Animated gradient text shimmer (gold) ───────────────────────────────── */
 @keyframes gold-shimmer {

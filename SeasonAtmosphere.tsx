@@ -30,7 +30,7 @@ type Kind = 'rain' | 'autumn' | 'winter' | 'spring' | 'summer';
 const KINDS: Kind[] = ['rain', 'autumn', 'winter', 'spring', 'summer'];
 
 // pool size = the FULL flood density; ambient draws a fraction of it
-const COUNT: Record<Kind, number> = { rain: 300, autumn: 195, winter: 375, spring: 205, summer: 135 };
+const COUNT: Record<Kind, number> = { rain: 150, autumn: 90, winter: 190, spring: 95, summer: 60 };
 
 const SWEEP = 820;        // px/s sideways blow-away at full exit
 const BASE_DENS = 0.3;    // ambient density once the flood has settled
@@ -137,7 +137,7 @@ export default function SeasonAtmosphere() {
 
     const resize = () => {
       W = window.innerWidth || 1; H = window.innerHeight || 1;
-      const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+      const dpr = 1; // render at CSS resolution — soft particles don't need retina, and this cuts fill-rate hard
       canvas.width = Math.floor(W * dpr);
       canvas.height = Math.floor(H * dpr);
       canvas.style.width = W + 'px';
@@ -276,7 +276,7 @@ export default function SeasonAtmosphere() {
             ctx.fillStyle = p.col;
             ctx.globalAlpha = aFull * 0.32;          // soft halo
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.s * 3.2, 0, 6.2832);
+            ctx.arc(p.x, p.y, p.s * 2.6, 0, 6.2832);
             ctx.fill();
             ctx.globalAlpha = aFull;                  // bright core
             ctx.beginPath();
