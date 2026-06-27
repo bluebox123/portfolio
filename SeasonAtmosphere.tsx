@@ -8,11 +8,14 @@ const SECTION_IDS = ['identity', 'capabilities', 'experience', 'projects', 'cont
 type Kind = 'rain' | 'autumn' | 'winter' | 'spring' | 'summer';
 const KINDS: Kind[] = ['rain', 'autumn', 'winter', 'spring', 'summer'];
 
-const COUNT: Record<Kind, number> = { rain: 60, autumn: 40, winter: 80, spring: 40, summer: 20 };
+// Full density pools — ambient draws a fraction, entry floods draw all
+const COUNT: Record<Kind, number> = { rain: 150, autumn: 90, winter: 190, spring: 95, summer: 60 };
+
 const SWEEP = 820;
 const BASE_DENS = 0.3;
 const INTENSITY_DECAY = 0.28;
-const FPS_CAP = 34; // ~30fps — halves draw work vs 60fps
+// ~30fps cap: halves canvas work with no visual change (particles are soft, 30fps reads fine)
+const FPS_CAP = 34;
 
 const BG_TOP: [number, number, number][] = [
   [12,16,22],[24,15,8],[10,16,24],[20,11,18],[24,18,9],
@@ -21,14 +24,16 @@ const BG_BOT: [number, number, number][] = [
   [4,6,9],[9,5,3],[4,7,11],[8,4,8],[9,7,4],
 ];
 
-const AUTUMN = ['#9A3412','#B45309','#C2410C','#C9A962','#D97706'];
-const SPRING  = ['#F472B6','#F4A6C0','#F9A8C4','#FCA5A5','#FBCFE8'];
+const AUTUMN = ['#C2410C','#B45309','#9A3412','#C9A962','#D97706'];
+const SPRING  = ['#F9A8C4','#F4A6C0','#FBCFE8','#F472B6','#FCA5A5'];
 
 interface P {
   x: number; y: number; vx: number; vy: number;
   s: number; rot: number; vrot: number; ph: number; sw: number;
   a: number; len: number; col: string;
-  sinPh: number; cosPh: number; // precomputed — saves Math.sin per particle per frame
+  // precomputed at spawn — replaces Math.sin(el*k + p.ph) per particle per frame
+  // with (sinK * p.cosPh + cosK * p.sinPh), saving N trig calls per season
+  sinPh: number; cosPh: number;
 }
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -36,33 +41,47 @@ const pick = (arr: string[]) => arr[(Math.random() * arr.length) | 0];
 
 function spawn(kind: Kind, w: number, h: number, seed = false): P {
   const ph = rnd(0, Math.PI * 2);
-  const sp = Math.sin(ph), cp = Math.cos(ph);
   switch (kind) {
     case 'rain':
-      return { x: rnd(-0.1*w, 1.1*w), y: seed ? rnd(0,h) : -rnd(0,h),
+      return {
+        x: rnd(-0.1*w, 1.1*w), y: seed ? rnd(0,h) : -rnd(0,h),
         vx: rnd(-90,-40), vy: rnd(820,1250), s:0, rot:0, vrot:0,
-        ph, sw:0, a: rnd(0.12,0.34), len: rnd(12,26), col:'#A9CCE3', sinPh:sp, cosPh:cp };
+        ph:0, sw:0, a: rnd(0.12,0.34), len: rnd(12,26), col:'#A9CCE3',
+        sinPh:0, cosPh:1,
+      };
     case 'autumn':
-      return { x: rnd(0,w), y: seed ? rnd(0,h) : rnd(-40,-10),
+      return {
+        x: rnd(0,w), y: seed ? rnd(0,h) : rnd(-40,-10),
         vx: rnd(-12,8), vy: rnd(45,95), s: rnd(5,11),
         rot: rnd(0, Math.PI*2), vrot: rnd(-1.3,1.3), ph, sw: rnd(22,52),
-        a: rnd(0.55,0.92), len:0, col: pick(AUTUMN), sinPh:sp, cosPh:cp };
+        a: rnd(0.55,0.92), len:0, col: pick(AUTUMN),
+        sinPh: Math.sin(ph), cosPh: Math.cos(ph),
+      };
     case 'winter':
-      return { x: rnd(0,w), y: seed ? rnd(0,h) : rnd(-40,-10),
+      return {
+        x: rnd(0,w), y: seed ? rnd(0,h) : rnd(-40,-10),
         vx:0, vy: rnd(28,62), s: rnd(1.3,3.8),
         rot:0, vrot:0, ph, sw: rnd(8,20),
-        a: rnd(0.45,0.85), len:0, col:'#EAF2FB', sinPh:sp, cosPh:cp };
+        a: rnd(0.45,0.85), len:0, col:'#EAF2FB',
+        sinPh: Math.sin(ph), cosPh: Math.cos(ph),
+      };
     case 'spring':
-      return { x: rnd(0,w), y: seed ? rnd(0,h) : rnd(-40,-10),
+      return {
+        x: rnd(0,w), y: seed ? rnd(0,h) : rnd(-40,-10),
         vx: rnd(-10,10), vy: rnd(38,78), s: rnd(4,9),
         rot: rnd(0, Math.PI*2), vrot: rnd(-1.6,1.6), ph, sw: rnd(26,58),
-        a: rnd(0.5,0.85), len:0, col: pick(SPRING), sinPh:sp, cosPh:cp };
+        a: rnd(0.5,0.85), len:0, col: pick(SPRING),
+        sinPh: Math.sin(ph), cosPh: Math.cos(ph),
+      };
     default: // summer
-      return { x: rnd(0,w), y: seed ? rnd(0,h) : rnd(h,h+40),
+      return {
+        x: rnd(0,w), y: seed ? rnd(0,h) : rnd(h,h+40),
         vx: rnd(-14,14), vy: rnd(-46,-16), s: rnd(1.3,2.6),
         rot:0, vrot:0, ph, sw: rnd(10,22),
         a: rnd(0.45,0.9), len:0,
-        col: Math.random() < 0.5 ? '#FFD27A' : '#C9A962', sinPh:sp, cosPh:cp };
+        col: Math.random() < 0.5 ? '#FFD27A' : '#C9A962',
+        sinPh: Math.sin(ph), cosPh: Math.cos(ph),
+      };
   }
 }
 
@@ -81,13 +100,8 @@ export default function SeasonAtmosphere() {
     let H = window.innerHeight || 1;
 
     const pools: Record<Kind, P[]> = { rain:[], autumn:[], winter:[], spring:[], summer:[] };
-
     const build = () => {
-      for (const k of KINDS) {
-        pools[k] = Array.from({ length: COUNT[k] }, () => spawn(k, W, H, true));
-        // sort by color so autumn/spring batch-draw per color without per-particle fillStyle changes
-        pools[k].sort((a, b) => (a.col < b.col ? -1 : 1));
-      }
+      for (const k of KINDS) pools[k] = Array.from({ length: COUNT[k] }, () => spawn(k, W, H, true));
     };
 
     const reseed = (p: P, kind: Kind) => {
@@ -113,18 +127,19 @@ export default function SeasonAtmosphere() {
 
     const resize = () => {
       W = window.innerWidth || 1; H = window.innerHeight || 1;
-      // DPR=1 — soft particles look fine at CSS resolution; halves fill-rate vs retina
-      canvas.width  = W; canvas.height = H;
+      const dpr = 1; // CSS resolution — soft particles don't need retina, halves fill-rate
+      canvas.width  = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
       canvas.style.width  = W + 'px';
       canvas.style.height = H + 'px';
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       measure();
     };
     resize();
     build();
     window.addEventListener('resize', resize);
 
-    // Cache sp — only recompute when the user actually scrolls, not every rAF tick
+    // Cache sp — only recompute when user actually scrolls (not every rAF tick)
     let scrollDirty = true;
     let cachedSp    = 0;
     const onScroll  = () => { scrollDirty = true; };
@@ -151,7 +166,7 @@ export default function SeasonAtmosphere() {
     let last        = performance.now();
     let lastFrameMs = 0;
     let raf         = 0;
-    let lastSp      = 0;
+    let lastSp      = seasonPos();
     let dirSign     = 1;
     let lastBgSp    = -999;
     const prevW     = [0,0,0,0,0];
@@ -161,7 +176,7 @@ export default function SeasonAtmosphere() {
     const draw = (now: number) => {
       if (!reduce) raf = requestAnimationFrame(draw);
 
-      // 30fps cap — skip all work when the budget isn't up yet
+      // ~30fps cap: skip all work when budget not up; particles look smooth at 30fps
       if (now - lastFrameMs < FPS_CAP) return;
       lastFrameMs = now;
 
@@ -176,32 +191,35 @@ export default function SeasonAtmosphere() {
       lastSp = sp;
       if (dv > 0.0008) dirSign = 1; else if (dv < -0.0008) dirSign = -1;
 
-      // Backdrop — only rewrite when season meaningfully shifts
+      // Backdrop: only rewrite when season meaningfully shifts
       if (backdropRef.current && Math.abs(sp - lastBgSp) > 0.01) {
         const i0 = Math.max(0, Math.min(4, Math.floor(sp)));
         const i1 = Math.min(4, i0+1);
         const fr = sp - i0;
-        const mx = (a: number, b: number) => Math.round(a + (b-a)*fr);
-        const tt = `rgb(${mx(BG_TOP[i0][0],BG_TOP[i1][0])},${mx(BG_TOP[i0][1],BG_TOP[i1][1])},${mx(BG_TOP[i0][2],BG_TOP[i1][2])})`;
-        const bb = `rgb(${mx(BG_BOT[i0][0],BG_BOT[i1][0])},${mx(BG_BOT[i0][1],BG_BOT[i1][1])},${mx(BG_BOT[i0][2],BG_BOT[i1][2])})`;
+        const mix = (a: number, b: number) => Math.round(a + (b-a)*fr);
+        const tt = `rgb(${mix(BG_TOP[i0][0],BG_TOP[i1][0])},${mix(BG_TOP[i0][1],BG_TOP[i1][1])},${mix(BG_TOP[i0][2],BG_TOP[i1][2])})`;
+        const bb = `rgb(${mix(BG_BOT[i0][0],BG_BOT[i1][0])},${mix(BG_BOT[i0][1],BG_BOT[i1][1])},${mix(BG_BOT[i0][2],BG_BOT[i1][2])})`;
         backdropRef.current.style.background = `linear-gradient(180deg,${tt} 0%,${bb} 100%)`;
         lastBgSp = sp;
       }
 
       ctx.clearRect(0, 0, W, H);
 
-      // 4 trig calls per frame instead of COUNT[k] calls per particle per frame
+      // Precompute sin/cos per frame — sin(el*k + p.ph) = sinK*p.cosPh + cosK*p.sinPh
+      // saves N Math.sin calls per season (identical math result, just faster)
       const s11 = Math.sin(el * 1.1), c11 = Math.cos(el * 1.1);
       const s14 = Math.sin(el * 1.4), c14 = Math.cos(el * 1.4);
       const s08 = Math.sin(el * 0.8), c08 = Math.cos(el * 0.8);
+      const s22 = Math.sin(el * 2.2), c22 = Math.cos(el * 2.2);
 
-      for (let ki = 0; ki < 5; ki++) {
+      for (let ki = 0; ki < KINDS.length; ki++) {
         const kind    = KINDS[ki];
         const d       = sp - ki;
         const ad      = Math.abs(d);
         const weight  = Math.max(0, 1 - ad);
         const exiting = (dirSign >= 0 && d > 0) || (dirSign < 0 && d < 0);
-        const sweep   = exiting ? Math.min(1, ad) ** 2 : 0;
+        const sweepRaw = exiting ? Math.min(1, ad) : 0;
+        const sweep    = sweepRaw * sweepRaw;
 
         if (primed && weight >= 0.04 && prevW[ki] < 0.04 && !exiting) {
           if (kind !== 'rain') enter(kind);
@@ -213,80 +231,86 @@ export default function SeasonAtmosphere() {
         const vis = Math.min(1, weight + intensity[ki]);
         if (vis <= 0.01) continue;
 
-        const arr       = pools[kind];
-        const drawCount = Math.max(1, Math.floor(arr.length * (BASE_DENS + (1-BASE_DENS)*intensity[ki])));
+        const arr = pools[kind];
+        const dens = BASE_DENS + (1 - BASE_DENS) * intensity[ki];
+        const af   = arr.length * dens;
 
-        // ── RAIN — single path, uniform alpha ────────────────────────────────
         if (kind === 'rain') {
-          ctx.strokeStyle = '#A9CCE3';
           ctx.lineCap     = 'round';
           ctx.lineWidth   = 1.1;
-          ctx.globalAlpha = vis * 0.22;
-          ctx.beginPath();
-          for (let pi = 0; pi < drawCount; pi++) {
+          ctx.strokeStyle = '#A9CCE3';
+          for (let pi = 0; pi < arr.length; pi++) {
+            const vizf = af - pi; if (vizf <= 0) break;
             const p = arr[pi];
             p.x += p.vx * dt; p.y += p.vy * dt;
             if (p.y > H+20) { p.y = -20; p.x = rnd(-0.1*W, 1.1*W); }
             if (p.x < -40) p.x = W + 40;
+            ctx.globalAlpha = p.a * vis * Math.min(1, vizf);
+            ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p.x - p.vx * 0.018, p.y - p.len);
+            ctx.stroke();
           }
-          ctx.stroke();
           ctx.globalAlpha = 1;
 
-        // ── WINTER — single path, single fill ────────────────────────────────
         } else if (kind === 'winter') {
-          ctx.fillStyle   = '#EAF2FB';
-          ctx.globalAlpha = vis * 0.65;
-          ctx.beginPath();
-          for (let pi = 0; pi < drawCount; pi++) {
+          ctx.fillStyle = '#EAF2FB';
+          for (let pi = 0; pi < arr.length; pi++) {
+            const vizf = af - pi; if (vizf <= 0) break;
             const p    = arr[pi];
             const side = p.x < W*0.5 ? -1 : 1;
             p.x += ((s11*p.cosPh + c11*p.sinPh)*p.sw + side*SWEEP*sweep) * dt;
             p.y += p.vy * (1 - sweep*0.5) * dt;
-            if (p.x < -50 || p.x > W+50 || p.y > H+10) reseed(p, kind);
+            if (p.x < -50 || p.x > W+50) reseed(p, kind);
+            else if (p.y > H+10) reseed(p, kind);
+            ctx.globalAlpha = p.a * vis * Math.min(1, vizf);
+            ctx.beginPath();
             ctx.arc(p.x, p.y, p.s, 0, 6.2832);
+            ctx.fill();
           }
-          ctx.fill();
           ctx.globalAlpha = 1;
 
-        // ── SUMMER — single path, no double-draw halo ────────────────────────
         } else if (kind === 'summer') {
-          ctx.fillStyle   = '#FFD27A';
-          ctx.globalAlpha = vis * 0.78;
-          ctx.beginPath();
-          for (let pi = 0; pi < drawCount; pi++) {
+          for (let pi = 0; pi < arr.length; pi++) {
+            const vizf = af - pi; if (vizf <= 0) break;
             const p    = arr[pi];
             const side = p.x < W*0.5 ? -1 : 1;
             p.x += ((s08*p.cosPh + c08*p.sinPh)*p.sw + p.vx + side*SWEEP*sweep) * dt;
             p.y += p.vy * dt;
-            if (p.x < -50 || p.x > W+50 || p.y < -20) reseed(p, kind);
-            ctx.arc(p.x, p.y, p.s * 1.5, 0, 6.2832);
+            if (p.x < -50 || p.x > W+50) reseed(p, kind);
+            else if (p.y < -20) reseed(p, kind);
+            const pulse  = 0.4 + 0.6 * (0.5 + 0.5 * (s22*p.cosPh + c22*p.sinPh));
+            const aFull  = Math.min(1, p.a * vis * pulse * Math.min(1, vizf));
+            ctx.fillStyle    = p.col;
+            ctx.globalAlpha  = aFull * 0.32;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.s * 2.6, 0, 6.2832);
+            ctx.fill();
+            ctx.globalAlpha  = aFull;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.s * 1.1, 0, 6.2832);
+            ctx.fill();
+            ctx.globalAlpha  = 1;
           }
-          ctx.fill();
-          ctx.globalAlpha = 1;
 
-        // ── AUTUMN + SPRING — pre-sorted by color, batch per color group ─────
         } else {
+          // autumn leaves + spring petals
           const ry = kind === 'spring' ? 0.42 : 0.58;
-          ctx.globalAlpha = vis * 0.78;
-          let curCol = '';
-          for (let pi = 0; pi < drawCount; pi++) {
+          for (let pi = 0; pi < arr.length; pi++) {
+            const vizf = af - pi; if (vizf <= 0) break;
             const p    = arr[pi];
             const side = p.x < W*0.5 ? -1 : 1;
             p.x += ((s14*p.cosPh + c14*p.sinPh)*p.sw + p.vx + side*SWEEP*sweep) * dt;
             p.y += p.vy * (1 - sweep*0.5) * dt;
             p.rot += (p.vrot + side*sweep*3) * dt;
-            if (p.x < -50 || p.x > W+50 || p.y > H+20) reseed(p, kind);
-            if (p.col !== curCol) {
-              if (curCol !== '') ctx.fill();
-              curCol = p.col;
-              ctx.fillStyle = curCol;
-              ctx.beginPath();
-            }
+            if (p.x < -50 || p.x > W+50) reseed(p, kind);
+            else if (p.y > H+20) reseed(p, kind);
+            ctx.globalAlpha  = Math.min(1, p.a * vis * Math.min(1, vizf));
+            ctx.fillStyle    = p.col;
+            ctx.beginPath();
             ctx.ellipse(p.x, p.y, p.s, p.s*ry, p.rot, 0, 6.2832);
+            ctx.fill();
           }
-          if (curCol !== '') ctx.fill();
           ctx.globalAlpha = 1;
         }
       }
