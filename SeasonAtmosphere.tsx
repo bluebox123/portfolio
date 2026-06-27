@@ -15,7 +15,7 @@ const SWEEP = 820;
 const BASE_DENS = 0.3;
 const INTENSITY_DECAY = 0.28;
 // ~30fps cap: halves canvas work with no visual change (particles are soft, 30fps reads fine)
-const FPS_CAP = 34;
+const FPS_CAP = 16; // ~60fps
 
 const BG_TOP: [number, number, number][] = [
   [12,16,22],[24,15,8],[10,16,24],[20,11,18],[24,18,9],
