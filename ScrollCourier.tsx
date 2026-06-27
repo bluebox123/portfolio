@@ -13,7 +13,7 @@ const prefersReduced = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-const TRAIL = 10;
+const TRAIL = 6;
 
 // Waypoints as fractions of the viewport — a loop hugging the screen's edges
 // (the negative-space frame around the centered content column).
@@ -50,7 +50,6 @@ export default function ScrollCourier() {
   const svgRef = useRef<SVGSVGElement>(null);
   const railRef = useRef<SVGPathElement>(null);
   const craftRef = useRef<SVGGElement>(null);
-  const bodyRef = useRef<SVGGElement>(null);
   const flameOuterRef = useRef<SVGPolygonElement>(null);
   const flameInnerRef = useRef<SVGPolygonElement>(null);
   const flameCoreRef = useRef<SVGPolygonElement>(null);
@@ -81,7 +80,6 @@ export default function ScrollCourier() {
     window.addEventListener('resize', setSize);
 
     let prog = 0;
-    let roll = 0;
     let raf = 0;
 
     const frame = (now: number) => {
@@ -118,10 +116,6 @@ export default function ScrollCourier() {
         y: here.y,
       };
 
-      // barrel-roll the body (fake 3D roll via vertical flip); spins faster under speed
-      if (!reduce) roll += 0.01 + speed * 6;
-      bodyRef.current?.setAttribute('transform', `scale(1 ${Math.cos(roll).toFixed(3)})`);
-
       // flickering flame exhaust — stretches when you scroll faster
       const flick = reduce ? 0 : Math.random() * 7;
       const len = 22 + Math.sin(now * 0.02) * 4 + flick + Math.min(130, speed * 950);
@@ -129,8 +123,6 @@ export default function ScrollCourier() {
       flameOuterRef.current?.setAttribute('points', `${TX},-7 ${(TX - len).toFixed(1)},0 ${TX},7`);
       flameInnerRef.current?.setAttribute('points', `${TX},-3.5 ${(TX - len * 0.6).toFixed(1)},0 ${TX},3.5`);
       flameCoreRef.current?.setAttribute('points', `${TX},-1.8 ${(TX - len * 0.32).toFixed(1)},0 ${TX},1.8`);
-      flameOuterRef.current?.setAttribute('opacity', (0.6 + Math.random() * 0.3).toFixed(2));
-
       hist.unshift({ x: here.x, y: here.y });
       if (hist.length > TRAIL) hist.pop();
       for (let i = 0; i < TRAIL; i++) {
@@ -229,7 +221,7 @@ export default function ScrollCourier() {
           <polygon ref={flameOuterRef} fill="url(#sc-flame-out)" opacity="0.8" />
           <polygon ref={flameInnerRef} fill="url(#sc-flame-in)" opacity="0.9" />
           <polygon ref={flameCoreRef} fill="url(#sc-flame-core)" opacity="0.95" />
-          <g ref={bodyRef}>
+          <g>
             {/* swept fins (behind the hull) */}
             <path d="M-9 -6 L-21 -19 L-21 -12 L-13 -3 Z" fill="url(#sc-fin)" />
             <path d="M-9 6 L-21 19 L-21 12 L-13 3 Z" fill="url(#sc-fin)" />
