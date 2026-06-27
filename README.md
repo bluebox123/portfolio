@@ -4,7 +4,7 @@ Overview of projects, skills, and experience in AI Engineering and Full Stack De
 
 ## 🚀 Live Demo
 
-Check out the live version here: [**https://portfolio-hid6t4r5t-bluebox123s-projects.vercel.app/**](https://portfolio-hid6t4r5t-bluebox123s-projects.vercel.app/)
+Check out the live version here: [**https://portfolio-n0miep0c1-bluebox123s-projects.vercel.app/**](https://portfolio-n0miep0c1-bluebox123s-projects.vercel.app/)
 
 ## 🛠️ Tech Stack
 
